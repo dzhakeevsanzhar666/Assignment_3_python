@@ -3,9 +3,10 @@ import csv
 import json
 
 class FileManager:
-    #Task 1 File Manager
+    # Task 1: File Manager
     def __init__(self, filename):
         self.filename = filename
+
     def check_file(self):
         print("Checking file...")
         if os.path.exists(self.filename):
@@ -13,6 +14,7 @@ class FileManager:
             return True
         print(f"Error: {self.filename} not found.")
         return False
+
     def create_output_folder(self, folder='output'):
         print("Checking output folder...")
         if not os.path.exists(folder):
@@ -22,10 +24,11 @@ class FileManager:
             print(f"Output folder already exists: {folder}/")
 
 class DataLoader:
-    #Task 2:Data Loader 
+    # Task 2: Data Loader
     def __init__(self, filename):
         self.filename = filename
         self.students = []
+
     def load(self):
         print("Loading data...")
         try:
@@ -37,6 +40,7 @@ class DataLoader:
         except Exception as e:
             print(f"Error loading data: {e}")
             return []
+
     def preview(self, n=5):
         print(f"\nFirst {n} rows:")
         print("-" * 30)
@@ -45,21 +49,24 @@ class DataLoader:
         print("-" * 30)
 
 class DataAnalyser:
-    #Task 3 :Data Analyser
+    # Task 3: Data Analyser
     def __init__(self, students):
         self.students = students
         self.result = {}
+
     def analyse(self):
         gpas = []
-        high_performers = 0
+        # Сначала собираем все валидные GPA в список
         for s in self.students:
             try:
                 gpa_val = float(s['GPA'])
                 gpas.append(gpa_val)
-                if gpa_val > 3.5:
-                    high_performers += 1
             except ValueError:
                 continue
+        
+        high_students = list(filter(lambda x: float(x['GPA']) > 3.5, self.students))
+        high_performers = len(high_students)
+
         if gpas:
             self.result = {
                 "analysis": "GPA Statistics",
@@ -70,41 +77,49 @@ class DataAnalyser:
                 "high_performers": high_performers
             }
         return self.result
+
     def print_results(self):
-        if not self.result: return
+        if not self.result: 
+            print("No results to print.")
+            return
         print("\nGPA Analysis\n" + "-" * 30)
-        print(f"Total students : {self.result['total_students']}")
-        print(f"Average GPA    : {self.result['average_gpa']}")
-        print(f"Highest GPA    : {self.result['max_gpa']}")
-        print(f"Lowest GPA     : {self.result['min_gpa']}")
+        print(f"Total students   : {self.result['total_students']}")
+        print(f"Average GPA      : {self.result['average_gpa']}")
+        print(f"Highest GPA      : {self.result['max_gpa']}")
+        print(f"Lowest GPA       : {self.result['min_gpa']}")
         print(f"Students GPA>3.5 : {self.result['high_performers']}")
 
 class ResultSaver:
-    #Task 4:Result Saver
+    # Task 4: Result Saver
     def __init__(self, result, output_path):
         self.result = result
         self.output_path = output_path
+
     def save_json(self):
         try:
-            with open(self.output_path, 'w') as f:
+            with open(self.output_path, 'w', encoding='utf-8') as f:
                 json.dump(self.result, f, indent=4)
             print(f"\nResult saved to {self.output_path}")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error saving JSON: {e}")
 
 if __name__ == "__main__":
-    #Task 5:Main 
+    # Task 5: Main Integration
     FILE = 'global_university_students_performance_habits_10000.csv'
     
     fm = FileManager(FILE)
     if fm.check_file():
         fm.create_output_folder()
+        
         dl = DataLoader(FILE)
         data = dl.load()
+        
         if data:
             dl.preview(5)
+            
             analyser = DataAnalyser(data)
             analyser.analyse()
             analyser.print_results()
+            
             saver = ResultSaver(analyser.result, 'output/result.json')
             saver.save_json()
