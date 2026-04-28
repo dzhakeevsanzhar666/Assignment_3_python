@@ -1,0 +1,19 @@
+Output:
+Data loaded successfully: 10000 students
+
+First 5 rows:
+------------------------------
+S00001 | 23 | Female | Germany | GPA: 3.81
+S00002 | 26 | Female | USA | GPA: 3.46
+S00003 | 18 | Female | Canada | GPA: 4.0
+S00004 | 20 | Male | Australia | GPA: 3.77
+S00005 | 28 | Female | Australia | GPA: 4.0
+------------------------------
+
+GPA Analysis
+------------------------------
+Total students : 10000
+Average GPA    : 3.62
+Highest GPA    : 4.0
+Lowest GPA     : 1.92
+Students GPA>3.5 : 6557
